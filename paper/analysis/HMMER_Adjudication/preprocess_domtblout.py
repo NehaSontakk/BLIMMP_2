@@ -397,7 +397,7 @@ def main():
     print(f"Winners output: {len(winners)} rows", file=sys.stderr)
 
 
-    filter_by_kofam_threshold(winners, args.ko_list)
+    filtered = filter_by_kofam_threshold(winners, args.ko_list)
   
     filtered.to_csv(args.out, index=False)
     print(f"Written to {args.out}", file=sys.stderr)
