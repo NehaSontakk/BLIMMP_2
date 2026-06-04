@@ -396,7 +396,6 @@ def main():
     print(f"Overlap groups: {grouped['overlap_group'].nunique()}", file=sys.stderr)
     print(f"Winners output: {len(winners)} rows", file=sys.stderr)
 
-    ko = load_ko_list(args.ko_list)
 
     filter_by_kofam_threshold(winners, args.ko_list)
   
