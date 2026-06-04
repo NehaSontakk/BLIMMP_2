@@ -318,7 +318,26 @@ def compute_winners(df: pd.DataFrame, e_threshold: float = 1e-4) -> pd.DataFrame
     winners = df.loc[idx].reset_index(drop=True)
     return winners
 
+def filter_by_kofam_threshold(df: pd.DataFrame, ko_list_path: str) -> pd.DataFrame:
+    """Drop winners whose score is below the KOfam threshold for their KO."""
+    ko = pd.read_csv(ko_list_path, sep='\t', comment='#')
+    ko.columns = ko.columns.str.strip()
+    ko['knum']       = ko['knum'].astype(str).str.strip()
+    ko['score_type'] = ko['score_type'].astype(str).str.strip().str.lower()
+    ko['threshold']  = pd.to_numeric(ko['threshold'], errors='coerce')
+    ko = ko[['knum', 'threshold', 'score_type']]
 
+    merged = df.merge(ko, left_on='KO id', right_on='knum', how='left')
+
+    no_thresh  = merged['threshold'].isna()
+    full_pass  = (merged['score_type'] == 'full')   & (merged['score']   >= merged['threshold'])
+    domain_pass= (merged['score_type'] == 'domain') & (merged['i_score'] >= merged['threshold'])
+    keep = no_thresh | full_pass | domain_pass
+
+    n_dropped = (~keep).sum()
+    print(f"Threshold filtering: {n_dropped} rows dropped, {keep.sum()} kept", file=sys.stderr)
+
+    return merged.loc[keep].drop(columns=['knum', 'threshold', 'score_type']).reset_index(drop=True)
 #  Main 
 
 def main():
@@ -331,6 +350,8 @@ def main():
                     help="Output CSV (default: grouped_hits_winners.csv)")
     ap.add_argument("--e-threshold", type=float, default=1e-4,
                     help="Noise E-value threshold (default: 1e-4)")
+    ap.add_argument("--ko-list", default=None,
+                help="Path to KOfam ko_list file for threshold filtering")
     args = ap.parse_args()
 
     # Warm up Numba JIT
@@ -371,9 +392,16 @@ def main():
     # 5. Winner per overlap group
     print("Selecting winners per overlap group...", file=sys.stderr)
     winners = compute_winners(grouped, e_threshold=args.e_threshold)
-
+  
     print(f"Overlap groups: {grouped['overlap_group'].nunique()}", file=sys.stderr)
     print(f"Winners output: {len(winners)} rows", file=sys.stderr)
+
+    ko = load_ko_list(args.ko_list)
+
+    filter_by_kofam_threshold(winners, args.ko_list)
+  
+    filtered.to_csv(args.out, index=False)
+    print(f"Written to {args.out}", file=sys.stderr)
 
     # 6. Save
     winners.to_csv(args.out, index=False)
