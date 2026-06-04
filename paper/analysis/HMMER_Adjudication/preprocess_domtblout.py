@@ -317,7 +317,6 @@ def compute_winners(df: pd.DataFrame, e_threshold: float = 1e-4) -> pd.DataFrame
 
     winners = df.loc[idx].reset_index(drop=True)
     return winners
-
 def filter_by_kofam_threshold(df: pd.DataFrame, ko_list_path: str) -> pd.DataFrame:
     """Drop winners whose score is below the KOfam threshold for their KO."""
     ko = pd.read_csv(ko_list_path, sep='\t', comment='#')
@@ -327,17 +326,26 @@ def filter_by_kofam_threshold(df: pd.DataFrame, ko_list_path: str) -> pd.DataFra
     ko['threshold']  = pd.to_numeric(ko['threshold'], errors='coerce')
     ko = ko[['knum', 'threshold', 'score_type']]
 
+    original_columns = df.columns.tolist()  # save before merge
+
     merged = df.merge(ko, left_on='KO id', right_on='knum', how='left')
 
-    no_thresh  = merged['threshold'].isna()
-    full_pass  = (merged['score_type'] == 'full')   & (merged['score']   >= merged['threshold'])
-    domain_pass= (merged['score_type'] == 'domain') & (merged['i_score'] >= merged['threshold'])
+    no_thresh   = merged['threshold'].isna()
+    full_pass   = (merged['score_type'] == 'full')   & (merged['score']   >= merged['threshold'])
+    domain_pass = (merged['score_type'] == 'domain') & (merged['i_score'] >= merged['threshold'])
     keep = no_thresh | full_pass | domain_pass
 
-    n_dropped = (~keep).sum()
-    print(f"Threshold filtering: {n_dropped} rows dropped, {keep.sum()} kept", file=sys.stderr)
+    # Print proof of dropped rows
+    dropped = merged[~keep][['KO id', 'score_type', 'score', 'i_score', 'threshold']].copy()
+    dropped['score_used'] = dropped.apply(
+        lambda r: r['score'] if r['score_type'] == 'full' else r['i_score'], axis=1
+    )
+    print("\nDropped rows (score < threshold):", file=sys.stderr)
+    print(dropped[['KO id', 'score_type', 'score_used', 'threshold']].to_string(index=False), file=sys.stderr)
+    print(f"\nThreshold filtering: {(~keep).sum()} rows dropped, {keep.sum()} kept", file=sys.stderr)
 
-    return merged.loc[keep].drop(columns=['knum', 'threshold', 'score_type']).reset_index(drop=True)
+    # Restore exact original columns, no extras
+    return merged.loc[keep, original_columns].reset_index(drop=True)
 #  Main 
 
 def main():
