@@ -317,35 +317,40 @@ def compute_winners(df: pd.DataFrame, e_threshold: float = 1e-4) -> pd.DataFrame
 
     winners = df.loc[idx].reset_index(drop=True)
     return winners
+
+
 def filter_by_kofam_threshold(df: pd.DataFrame, ko_list_path: str) -> pd.DataFrame:
-    """Drop winners whose score is below the KOfam threshold for their KO."""
     ko = pd.read_csv(ko_list_path, sep='\t', comment='#')
     ko.columns = ko.columns.str.strip()
     ko['knum']       = ko['knum'].astype(str).str.strip()
     ko['score_type'] = ko['score_type'].astype(str).str.strip().str.lower()
     ko['threshold']  = pd.to_numeric(ko['threshold'], errors='coerce')
-    ko = ko[['knum', 'threshold', 'score_type']]
 
-    original_columns = df.columns.tolist()  # save before merge
+    thresholds  = dict(zip(ko['knum'], ko['threshold']))
+    score_types = dict(zip(ko['knum'], ko['score_type']))
 
-    merged = df.merge(ko, left_on='KO id', right_on='knum', how='left')
+    original_columns = df.columns.tolist()
 
-    no_thresh   = merged['threshold'].isna()
-    full_pass   = (merged['score_type'] == 'full')   & (merged['score']   >= merged['threshold'])
-    domain_pass = (merged['score_type'] == 'domain') & (merged['i_score'] >= merged['threshold'])
-    keep = no_thresh | full_pass | domain_pass
+    def passes(row):
+        kid = str(row['KO id']).strip()
+        t = thresholds.get(kid)
+        if t is None or pd.isna(t):
+            return True  # no threshold, keep
+        st = score_types.get(kid, 'full')
+        s = row['i_score'] if st == 'domain' else row['score']
+        return s >= t
 
-    # Print proof of dropped rows
-    dropped = merged[~keep][['KO id', 'score_type', 'score', 'i_score', 'threshold']].copy()
-    dropped['score_used'] = dropped.apply(
-        lambda r: r['score'] if r['score_type'] == 'full' else r['i_score'], axis=1
-    )
-    print("\nDropped rows (score < threshold):", file=sys.stderr)
-    print(dropped[['KO id', 'score_type', 'score_used', 'threshold']].to_string(index=False), file=sys.stderr)
-    print(f"\nThreshold filtering: {(~keep).sum()} rows dropped, {keep.sum()} kept", file=sys.stderr)
+    keep = df.apply(passes, axis=1)
 
-    # Restore exact original columns, no extras
-    return merged.loc[keep, original_columns].reset_index(drop=True)
+    n_dropped = (~keep).sum()
+    dropped = df[~keep][['KO id', 'score', 'i_score']].copy()
+    dropped['threshold'] = dropped['KO id'].map(thresholds)
+    dropped['score_type'] = dropped['KO id'].map(score_types)
+    print("\nDropped rows:", file=sys.stderr)
+    print(dropped.to_string(index=False), file=sys.stderr)
+    print(f"\nThreshold filtering: {n_dropped} dropped, {keep.sum()} kept", file=sys.stderr)
+
+    return df.loc[keep, original_columns].reset_index(drop=True)
 #  Main 
 
 def main():
@@ -404,16 +409,22 @@ def main():
     print(f"Overlap groups: {grouped['overlap_group'].nunique()}", file=sys.stderr)
     print(f"Winners output: {len(winners)} rows", file=sys.stderr)
 
-    # 6. Filter by KOfam threshold and save
-    filtered = filter_by_kofam_threshold(winners, args.ko_list)
-
-    filtered.to_csv(args.out, index=False)
+    # 6. Save pre-filter winners
+    winners.to_csv(args.out, index=False)
     print(f"Written to {args.out}", file=sys.stderr)
+
+    # 7. Filter by KOfam threshold and save
+    if args.ko_list:
+        print("Filtering by KOfam thresholds...", file=sys.stderr)
+        filtered = filter_by_kofam_threshold(winners, args.ko_list)
+        filtered_out = args.out.replace('.csv', '_kofam_filtered.csv')
+        filtered.to_csv(filtered_out, index=False)
+        print(f"Written to {filtered_out}", file=sys.stderr)
 
     # Preview
     with pd.option_context('display.max_columns', None, 'display.width', 200):
-        print("\nPreview (top 5 filtered winners):", file=sys.stderr)
-        print(filtered.head(5), file=sys.stderr)
+        print("\nPreview (top 5 winners):", file=sys.stderr)
+        print(winners.head(5), file=sys.stderr)
 
 if __name__ == "__main__":
     main()
