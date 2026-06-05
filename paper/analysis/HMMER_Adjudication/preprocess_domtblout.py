@@ -400,25 +400,20 @@ def main():
     # 5. Winner per overlap group
     print("Selecting winners per overlap group...", file=sys.stderr)
     winners = compute_winners(grouped, e_threshold=args.e_threshold)
-  
+
     print(f"Overlap groups: {grouped['overlap_group'].nunique()}", file=sys.stderr)
     print(f"Winners output: {len(winners)} rows", file=sys.stderr)
 
-
+    # 6. Filter by KOfam threshold and save
     filtered = filter_by_kofam_threshold(winners, args.ko_list)
-  
-    filtered.to_csv(args.out, index=False)
-    print(f"Written to {args.out}", file=sys.stderr)
 
-    # 6. Save
-    winners.to_csv(args.out, index=False)
+    filtered.to_csv(args.out, index=False)
     print(f"Written to {args.out}", file=sys.stderr)
 
     # Preview
     with pd.option_context('display.max_columns', None, 'display.width', 200):
-        print("\nPreview (top 5 winners):", file=sys.stderr)
-        print(winners.head(5), file=sys.stderr)
-
+        print("\nPreview (top 5 filtered winners):", file=sys.stderr)
+        print(filtered.head(5), file=sys.stderr)
 
 if __name__ == "__main__":
     main()
