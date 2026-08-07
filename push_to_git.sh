@@ -38,6 +38,8 @@ find . -mindepth 1 -not -path './.git*' -delete
 cp "$SRC_DIR"/*.py .  2>/dev/null || true
 cp "$SRC_DIR"/*.sh .  2>/dev/null || true
 cp "$SRC_DIR"/completeness_stats.csv . 2>/dev/null || true
+cp "$SRC_DIR"/Makefile . 2>/dev/null || true
+cp "$SRC_DIR"/README* . 2>/dev/null || true
 
 # NOTE: deliberately NOT copying these (data/output directories):
 #   Acinetobacter_baumannii, ANVIO_SUBSAMPLES, DRAM_SUBSAMPLES, HMM_CHUNKS,
