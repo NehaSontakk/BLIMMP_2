@@ -13,13 +13,12 @@
 
 set -euo pipefail
 
-# ---- Base dir (run this script from /xdisk/twheeler/nsontakke/Removal_Study_BLIMMP) ----
 BASE_DIR="/xdisk/twheeler/nsontakke/Removal_Study_BLIMMP"
 SCRIPT="$BASE_DIR/subsample_orfs.py"
 
 mkdir -p "$BASE_DIR/logs"
 
-# ---- Discover genomes the same way as the tantan/prodigal + BUSCO scripts ----
+# Genome recovery
 mapfile -t all_files < <(find "$BASE_DIR" -mindepth 2 -maxdepth 2 -type f -name '*.fna' | sort)
 TOTAL=${#all_files[@]}
 
@@ -33,7 +32,7 @@ genome_dir=$(dirname "$input_fa")           # e.g. .../MED4
 genome_name=$(basename "$genome_dir")       # e.g. MED4
 base=$(basename "$input_fa" .fna)           # e.g. GCF_000011465.1_ASM1146v1_genomic
 
-# ---- Locate the prodigal ORFs produced by the earlier step ----
+# ORFs
 ORFS_FAA="$genome_dir/${base}_results/${base}_ORFs.faa"
 
 if [[ ! -s "$ORFS_FAA" ]]; then
@@ -42,7 +41,7 @@ if [[ ! -s "$ORFS_FAA" ]]; then
   exit 1
 fi
 
-# ---- Flat per-genome output folder, named after the genome directory ----
+# Output
 OUT_DIR="$genome_dir/${genome_name}_SUBSAMPLES"
 
 echo "[$SLURM_ARRAY_TASK_ID] Genome    : $genome_name"
