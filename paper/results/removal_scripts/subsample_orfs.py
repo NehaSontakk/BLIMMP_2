@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """
-Randomly remove a percentage of ORFs from a Prodigal .faa file, across
-multiple percentages and replicates, and write:
-  - a CSV listing which ORF_IDs were removed
-  - a FASTA of the remaining (kept) ORFs
+Randomly remove a percentage of ORFs from a Prodigal .faa file, across multiple percentages and replicates, and write a csv and fasta
 
 Usage:
     python subsample_orfs.py -i /path/to/MED4_ORFs.faa -n MED4 -o /path/to/OUTPUT_DIR
@@ -84,7 +81,6 @@ def verify_consistency(all_ids, kept_records, removed_ids, fasta_out, removed_cs
     assert len(written_removed_ids) == len(removed_set), (
         f"[{tag}] Duplicate ID(s) found within the removed CSV"
     )
-
 
     assert removed_set == set(removed_ids), (
         f"[{tag}] Removed IDs written to CSV don't match the IDs computed in memory"
