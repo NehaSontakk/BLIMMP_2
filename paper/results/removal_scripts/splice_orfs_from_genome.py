@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""
-Splice out (mask) the genomic regions corresponding to previously-removed
-ORFs, so the resulting .fna resembles an incomplete genome recovered from
-the environment. Masked with N's.
 
+#Mask the genomic regions corresponding to the correct ORFs to remove, so the resulting .fna resembles an incomplete genome recovered from the environment. Masked with N's.
+
+"""
 Usage:
     python splice_orfs_from_genome.py \
         -f /path/to/GENOME.fna \
@@ -19,7 +18,6 @@ import argparse
 
 
 def read_fasta(filepath):
-    """Parse a FASTA file into an ordered list of (header, sequence) tuples."""
     header = None
     records = []
     seq_lines = []
@@ -57,27 +55,18 @@ def parse_orf_coordinates(orfs_faa_path):
             line = line.rstrip()
             fields = line[1:].split(" # ")
             if len(fields) < 3:
-                raise ValueError(f"Unexpected Prodigal header format: {line}")
+                raise ValueError(f"Incorrect prodigal format: {line}")
             orf_id = fields[0].strip()
             start = int(fields[1].strip())
             end = int(fields[2].strip())
             contig_id, _, gene_num = orf_id.rpartition("_")
-            if not contig_id or not gene_num.isdigit():
-                raise ValueError(
-                    f"Could not split ORF_ID into contig and gene number: {orf_id}"
-                )
             coords[orf_id] = (contig_id, start, end)
     return coords
 
 
 def find_removed_csvs(subsamples_dir, genome_name):
-    """
-    Locate every removed-ORF CSV produced by subsample_orfs.py for this
-    genome, one per (percent, replicate) combination.
-    """
-    pattern = os.path.join(
-        subsamples_dir, f"{genome_name}_*percentremoved_replicate*.csv"
-    )
+    # Locate every removed-ORF CSV produced by subsample_orfs.py for this genome, one per (percent, replicate) combination.
+    pattern = os.path.join(subsamples_dir, f"{genome_name}_*percentremoved_replicate*.csv")
     return sorted(glob.glob(pattern))
 
 
@@ -88,7 +77,7 @@ def parse_removed_ids(csv_path):
 
 
 def merge_intervals(intervals):
-    """Merge overlapping or adjacent (start, end) 1-based inclusive intervals."""
+    # Merge overlapping or adjacent (start, end) 1-based inclusive intervals.
     if not intervals:
         return []
     intervals = sorted(intervals)
@@ -103,11 +92,7 @@ def merge_intervals(intervals):
 
 
 def splice_genome(genome_records, contig_intervals, tag):
-    """
-    Return a new list of (header, sequence) records with the given
-    per-contig intervals masked to N. Also returns the count of bases
-    masked, for verification against the merged interval lengths.
-    """
+    # Return a new list of (header, sequence) records with the given per-contig intervals masked to N. Also returns the count of bases masked, for verification against the merged interval lengths.
     spliced = []
     total_masked = 0
     for header, seq in genome_records:
@@ -119,10 +104,7 @@ def splice_genome(genome_records, contig_intervals, tag):
         seq_chars = list(seq)
         for start, end in intervals:
             if start < 1 or end > len(seq_chars) or start > end:
-                raise ValueError(
-                    f"[{tag}] Interval ({start},{end}) out of bounds for "
-                    f"contig {contig_id} (length {len(seq_chars)})"
-                )
+                raise ValueError( f"[{tag}] Interval ({start},{end}) out of bounds for contig {contig_id} (length {len(seq_chars)})")
             span = end - start + 1
             seq_chars[start - 1:end] = ["N"] * span
             total_masked += span
@@ -131,12 +113,8 @@ def splice_genome(genome_records, contig_intervals, tag):
 
 
 def verify_masked_count(total_masked, contig_intervals, expected_orf_bases, tag):
-    """
-    Sanity check: the number of bases masked should equal the sum of the
-    merged interval lengths, not the raw sum of removed ORF lengths, since a
-    small number of Prodigal ORFs can overlap at the edges and merging
-    collapses that overlap. Report both so a large mismatch is easy to spot.
-    """
+    #Sanity check: the number of bases masked should equal the sum of the merged interval lengths, not the raw sum of removed ORF lengths, since a small number of Prodigal ORFs can overlap at the edges and merging collapses that overlap. 
+
     merged_bases = sum(
         end - start + 1 for ivs in contig_intervals.values() for start, end in ivs
     )
@@ -218,8 +196,7 @@ def splice_all(fna_path, orfs_faa_path, subsamples_dir, genome_name, output_dir)
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Splice (N-mask) the genomic regions of previously-removed "
-                    "ORFs to simulate an incomplete recovered genome."
+        description="Splice (N-mask) the genomic regions of previously-removed ORFs to simulate an incomplete recovered genome."
     )
     parser.add_argument("-f", "--fna", required=True, help="Original genome .fna")
     parser.add_argument("-a", "--orfs-faa", required=True, help="Prodigal .faa used to select ORFs for removal")
