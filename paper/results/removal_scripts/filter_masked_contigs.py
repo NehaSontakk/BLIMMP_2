@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 """
-Drop contigs that are fully or near-fully N-masked from a spliced genome
-before handing it to DRAM.
-
-DRAM's rRNA step (barrnap -> nhmmer) fails outright when it hits a contig
-with no real nucleotide signal to detect an alphabet from:
-    "Invalid alphabet type in target for nhmmer. Expect DNA or RNA."
-This is about composition, not length, so DRAM's own --min_contig_size
-flag doesn't help; a short-but-real contig is fine, a long-but-all-N
-contig is not. This script removes contigs whose N fraction meets or
-exceeds a threshold, and writes a report of what got dropped and why.
+Drop contigs that are fully or near-fully N-masked from a spliced genome before handing it to DRAM. This script removes contigs whose N fraction meets or exceeds a threshold.
 
 Usage:
     python filter_masked_contigs.py \
