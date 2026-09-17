@@ -38,9 +38,40 @@ if [[ -s "$OUT_FILE" ]]; then
     exit 0
 fi
 
-echo "Running MetaPathPredict on all ${#ko_files[@]} samples..."
+# ---- Filter out files with no significant KO hits ('*' rows) ----
+# MetaPathPredict crashes with KeyError on empty files (no rows above threshold).
+valid_files=()
+skipped_files=()
+
+for f in "${ko_files[@]}"; do
+    if grep -q $'^\*\t' "$f"; then
+        valid_files+=("$f")
+    else
+        skipped_files+=("$f")
+    fi
+done
+
+echo "Valid files (have '*' rows): ${#valid_files[@]}"
+echo "Skipped files (no KO hits above threshold): ${#skipped_files[@]}"
+
+if (( ${#skipped_files[@]} > 0 )); then
+    echo ""
+    echo "--- Skipped (zero significant KO hits) ---"
+    for f in "${skipped_files[@]}"; do
+        echo "  SKIP: $f"
+    done
+    echo "------------------------------------------"
+    echo ""
+fi
+
+if (( ${#valid_files[@]} == 0 )); then
+    echo "ERROR: No valid KofamScan files after filtering. Cannot run MetaPathPredict."
+    exit 1
+fi
+
+echo "Running MetaPathPredict on ${#valid_files[@]} samples..."
 MetaPathPredict \
-    -i "${ko_files[@]}" \
+    -i "${valid_files[@]}" \
     -a kofamscan \
     -o "$OUT_FILE"
 
