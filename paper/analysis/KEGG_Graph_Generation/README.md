@@ -4,9 +4,10 @@ Parses KEGG metabolic module definitions into the directed acyclic graphs BLIMMP
 
 **Pipeline order:**
 1. `Fetch_Prokaryote_Modules_From_KEGG.ipynb` — retrieves the list of prokaryote-relevant KEGG modules
-2. `Fetch_Definitions_From_KEGG.ipynb` — retrieves each module's logical definition string
-3. `GRAPH_GENERATION_USING_KEGG_CFG_Updated_Aug25.ipynb` — parses each definition with the grammar in `new_updated_grammar.txt` and builds per-module node/adjacency graphs
-4. `Aggregate_Module_Info_Updated_13AUG2026.ipynb` — merges the generated graphs with AllTheBacteria domain-level KO frequencies and edge priors into the node/adjacency JSONs used by BLIMMP-Explorer
+2. `Fetch_Definitions_From_KEGG.ipynb` — retrieves each module's raw logical definition string, writes `KEGG_Prokaryote_Modules_with_Definitions.xlsx`
+3. `Module_Path_Probability_Calculations.ipynb` — parses each raw definition with the grammar in `new_updated_grammar.txt` into structured logical equations (`KEGG_Module_Equations_18AUG26.json`)
+4. `GRAPH_GENERATION_USING_KEGG_CFG_Updated_Aug25.ipynb` — builds per-module node/adjacency graphs from the parsed equations
+5. `Aggregate_Module_Info_Updated_13AUG2026.ipynb` — merges the generated graphs with AllTheBacteria domain-level KO frequencies and edge priors into the node/adjacency JSONs used by BLIMMP-Explorer
 
 **Inputs:** KEGG REST API (module list and definitions fetched once, not re-pulled at runtime), `new_updated_grammar.txt`, AllTheBacteria domain-level priors (see `Prior_Generation/`).
 
