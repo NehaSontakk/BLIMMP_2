@@ -1,0 +1,37 @@
+?file: expr (NEWLINE expr)*
+expr: top
+
+# OUTSIDE parens: spaces split steps
+top: step (SPACE step)*
+step: choice | chain
+
+# Steps can contain choices which are comma seperated alternatives "chains"
+choice: chain (COMMA chain)+ 
+# Chains can contain factors which are seperated by plus or optional nodes 
+chain: factor (PLUS factor | MINUS factor)*  
+
+# factors are units such as modules or parenthesized groups
+factor: unit | group
+# Parenthesized group switches to "inside parens" rules
+group: LPAREN inner RPAREN
+
+# INSIDE parens: commas = alternatives, spaces = sequence
+inner: seq (COMMA seq)*             
+seq: chain (SPACE chain)*           
+
+# terminals
+unit: ko_id | module | start_node | sink_node
+
+ko_id: /-?K[0-9]{5}(?:_[0-9]+)?/
+module: /M[0-9]{5}/
+
+start_node: "START"
+sink_node: "SINK"
+
+SPACE: /[ \t]+/
+COMMA: ","
+PLUS: "+"
+MINUS: "-"
+LPAREN: "("
+RPAREN: ")"
+NEWLINE: "\n"
