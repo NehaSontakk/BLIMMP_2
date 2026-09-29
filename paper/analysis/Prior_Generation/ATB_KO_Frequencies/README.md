@@ -91,3 +91,14 @@ exist before step 5:
   from `/xdisk/cgoubert/nsontakke/` — consolidate before next full run.
 - Debug prints for K00150/K15634 and K11389/K15634 run for every lineage —
   remove before paper submission.
+
+
+## Data sources and provenance
+
+Genome assemblies were obtained from the AllTheBacteria dataset (release 2024-08-05, https://github.com/AllTheBacteria/AllTheBacteria), filtered to representative taxonomically diverse bacterial genomes — see `paper/data/ATB_Download_Scripts/`. Assembly metadata (`assembly_summary.txt`) comes from NCBI (ftp://ftp.ncbi.nlm.nih.gov/genomes/README_assembly_summary.txt) and the AllTheBacteria per-sample manifest (`file_list.all.20240805.tsv`, OSF-hosted) are not mirrored here; consult the linked upstream sources directly for the authoritative, current versions.
+
+## Subfolder contents
+
+- `ATB_Counts/` — per-taxon-tag KO occurrence counts across the AllTheBacteria reference set, including `KO_Counts_Lineage_Specific/` for lineage-level breakdowns
+- `ATB_FreqDiff_Outputs/` — frequency-difference comparisons and histograms between taxonomic levels (kingdom vs. domain, phylum vs. kingdom), used to sanity-check that lineage-specific priors diverge meaningfully from the domain-level baseline
+- `ATB_Intersections/` — see its own README; the actual data file is hosted as a Release asset due to size
