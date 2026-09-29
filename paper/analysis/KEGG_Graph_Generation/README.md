@@ -21,3 +21,8 @@ Parses KEGG metabolic module definitions into the directed acyclic graphs BLIMMP
 ## Generated graphs archive
 
 `KEGG_Graphs_Generated_13AUG2026.tar.gz` is a compressed snapshot of all 1361 generated files (per-module `nodes.json`, `adjacency.json`, `paths.json`, and `graph.png`), for reference and reproducibility checking. Decompress with `tar -xzf KEGG_Graphs_Generated_13AUG2026.tar.gz` to reproduce the exact directory structure BLIMMP's `module_json_dir` config expects. The live copy BLIMMP actually reads from during pipeline runs is not this archive — see `blimmp_src/BLIMMP_8Sep2026/BLIMMP/KEGG_Graphs_Generated_13AUG2026/`.
+
+
+## Generated graphs archive
+
+`KEGG_Graphs_Generated_13AUG2026.tar.gz` is a compressed snapshot of all 1361 generated files (per-module `nodes.json`, `adjacency.json`, `paths.json`, and `graph.png`), for reference and reproducibility checking. Decompress with `tar -xzf KEGG_Graphs_Generated_13AUG2026.tar.gz` to reproduce the exact directory structure BLIMMP's `module_json_dir` config expects. The live copy BLIMMP actually reads from during pipeline runs is not this archive — see `blimmp_src/BLIMMP_8Sep2026/BLIMMP/KEGG_Graphs_Generated_13AUG2026/`.
