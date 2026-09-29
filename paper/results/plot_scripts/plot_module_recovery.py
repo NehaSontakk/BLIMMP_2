@@ -34,9 +34,27 @@ MOD_DIR  = BASE_DIR / "MODULE_MATRICES"
 OUT_DIR  = BASE_DIR / "PLOTS"
 OUT_DIR.mkdir(exist_ok=True)
 
-meta           = pd.read_csv(MOD_DIR / "sample_metadata.csv", index_col="sample")
-organisms      = sorted(o for o in meta["organism"].unique()
-                        if o != "Acinetobacter_baumannii")
+meta = pd.read_csv(MOD_DIR / "sample_metadata.csv", index_col="sample")
+
+# Explicit panel order: the three P. marinus strains grouped together
+# first, followed by P. fluorescens SBW25. A. baumannii is excluded (as
+# before). Using an explicit order here (rather than sorted(), which
+# alphabetizes to MED4, MIT9313, Pseudomonas..., SS120 and both breaks
+# up the marinus strains and pushes SS120 to the end) so panel order
+# always matches this list regardless of what's present in the metadata.
+ORGANISM_ORDER = [
+    "MED4",
+    "SS120",
+    "MIT9313",
+    "Pseudomonas_fluorescens_SBW25",
+]
+available_in_meta = set(meta["organism"].unique())
+organisms = [o for o in ORGANISM_ORDER if o in available_in_meta]
+missing_from_order = available_in_meta - set(ORGANISM_ORDER) - {"Acinetobacter_baumannii"}
+if missing_from_order:
+    print(f"  WARNING: organism(s) in metadata but not in ORGANISM_ORDER, "
+          f"excluded from plots: {sorted(missing_from_order)}")
+
 removal_levels = sorted(meta["removal_pct"].unique())
 removal_levels_plot = [r for r in removal_levels if r < 100]
 
