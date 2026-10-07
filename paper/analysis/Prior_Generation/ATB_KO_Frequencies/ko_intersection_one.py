@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 from scipy.sparse import csr_matrix
 
-BASE = Path("/xdisk/cgoubert/nsontakke/ATB_KO_Frequencies")
+BASE = Path("/xdisk/twheeler/nsontakke/BLIMMP_2/paper/analysis/Prior_Generation/ATB_KO_Frequencies")
 OUT_INT_DIR = BASE / "Lineage_Specific_Data" / "KO_Intersections_Lineage_Specific"
 OUT_INT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -25,8 +25,8 @@ if n_samples == 0:
     print(f"[SKIP DATA] {fpath.name}: 0 samples -> wrote empty intersection.")
     sys.exit(0)
 
-bin_df = (df > 0).astype(np.uint8, copy=False)
-X = csr_matrix(bin_df.to_numpy(dtype=np.uint8, copy=False))
+bin_df = (df > 0).astype(np.int32, copy=False)
+X = csr_matrix(bin_df.to_numpy(dtype=np.int32, copy=False))
 M = (X @ X.T).astype(np.int32)
 
 pd.DataFrame.sparse.from_spmatrix(M, index=bin_df.index, columns=bin_df.index).to_csv(out_int, sep="\t")

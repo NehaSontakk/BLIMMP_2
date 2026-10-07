@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-BASE = Path("/xdisk/cgoubert/nsontakke/ATB_KO_Frequencies")
+BASE = Path("/xdisk/twheeler/nsontakke/BLIMMP_2/paper/analysis/Prior_Generation/ATB_KO_Frequencies")
 OUT_CNT_DIR = BASE / "Lineage_Specific_Data" / "KO_Counts_Lineage_Specific"
 OUT_CNT_DIR.mkdir(parents=True, exist_ok=True)
 

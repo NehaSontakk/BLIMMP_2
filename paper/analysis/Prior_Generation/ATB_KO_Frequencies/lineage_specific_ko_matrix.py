@@ -3,7 +3,7 @@
 import csv, os, glob
 from pathlib import Path
 
-BASE = Path("/xdisk/cgoubert/nsontakke/ATB_KO_Frequencies")
+BASE = Path("/xdisk/twheeler/nsontakke/BLIMMP_2/paper/analysis/Prior_Generation/ATB_KO_Frequencies")
 KO_MATRIX = BASE / "ko_matrix.tsv"
 SAMPLES_DIR = BASE / "Lineage_Specific_Data" / "Lineage_Specific_SampleNames"
 OUT_DIR = BASE / "Lineage_Specific_Data" / "KO_Matrices"

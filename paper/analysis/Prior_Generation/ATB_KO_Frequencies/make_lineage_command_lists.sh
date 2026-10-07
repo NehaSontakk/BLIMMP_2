@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE="/xdisk/cgoubert/nsontakke/ATB_KO_Frequencies"
+BASE="/xdisk/twheeler/nsontakke/BLIMMP_2/paper/analysis/Prior_Generation/ATB_KO_Frequencies"
 KO_DIR="${BASE}/Lineage_Specific_Data/KO_Matrices"
 
-INT_PY="${BASE}/ko_intersection_one.py"
+INT_PY="${BASE}/ko_intersection_one_FAST.py"
 CNT_PY="${BASE}/ko_counts_one.py"
 
 INT_CMDS="${BASE}/ko_intersection_lineage_commands.txt"

@@ -7,7 +7,7 @@ import json, csv, re
 from pathlib import Path
 from collections import defaultdict
 
-BASE = Path("/xdisk/twheeler/nsontakke/copied_from_cgoubert/ATB_KO_Frequencies/Lineage_Specific_Data")
+BASE = Path("/xdisk/twheeler/nsontakke/BLIMMP_2/paper/analysis/Prior_Generation/ATB_KO_Frequencies/Lineage_Specific_Data")
 
 SAMPLE_ONE_HOP_JSON = BASE / "Sample_One_Hop_Neighbor.txt"
 SAMPLE_TWO_HOP_JSON = BASE / "Sample_Two_Hop_Neighbor.txt"
