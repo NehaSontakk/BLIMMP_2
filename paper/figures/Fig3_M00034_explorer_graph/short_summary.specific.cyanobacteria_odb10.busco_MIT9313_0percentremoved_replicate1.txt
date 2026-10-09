@@ -1,0 +1,31 @@
+# BUSCO version is: 5.8.3 
+# The lineage dataset is: cyanobacteria_odb10 (Creation date: 2024-01-08, number of genomes: 141, number of BUSCOs: 773)
+# Summarized benchmarking in BUSCO notation for file /xdisk/twheeler/nsontakke/Removal_Study_BLIMMP/MIT9313/MIT9313_SPLICED_GENOMES/MIT9313_0percentremoved_replicate1_spliced.fna
+# BUSCO was run in mode: prok_genome_prod
+# Gene predictor used: prodigal
+
+	***** Results: *****
+
+	C:97.8%[S:97.8%,D:0.0%],F:0.4%,M:1.8%,n:773	   
+	756	Complete BUSCOs (C)			   
+	756	Complete and single-copy BUSCOs (S)	   
+	0	Complete and duplicated BUSCOs (D)	   
+	3	Fragmented BUSCOs (F)			   
+	14	Missing BUSCOs (M)			   
+	773	Total BUSCO groups searched		   
+
+Assembly Statistics:
+	1	Number of scaffolds
+	1	Number of contigs
+	2410873	Total length
+	0.000%	Percent gaps
+	2 MB	Scaffold N50
+	2 MB	Contigs N50
+
+
+Dependencies and versions:
+	hmmsearch: 3.1
+	bbtools: None
+	prodigal: 2.6.3
+	python: sys.version_info(major=3, minor=8, micro=20, releaselevel='final', serial=0)
+	busco: 5.8.3

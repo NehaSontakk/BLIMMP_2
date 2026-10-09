@@ -1,0 +1,14 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+xft:PD_0293          -            438 eco:b3959            -            258   1.5e-22   66.6   0.9   1   1     2e-22     2e-22   66.1   0.9     6   254    41   285    37   289 0.81 K22478 bifunctional N-acetylglutamate synthase/kinase [EC:2.3.1.1 2.7.2.8] | (GenBank) argB; acetylglutamate kinase (A)
+#
+# Program:         phmmer
+# Version:         3.4 (Aug 2023)
+# Pipeline mode:   SEARCH
+# Query file:      eco_b3959_seq_K00930.txt
+# Target file:     xft_PD_0293_K22478.txt
+# Option settings: phmmer --domtblout K00930_vs_K22478.domtblout eco_b3959_seq_K00930.txt xft_PD_0293_K22478.txt 
+# Current dir:     /xdisk/twheeler/nsontakke/test_paper_m000845
+# Date:            Fri Sep 25 15:10:02 2026
+# [ok]

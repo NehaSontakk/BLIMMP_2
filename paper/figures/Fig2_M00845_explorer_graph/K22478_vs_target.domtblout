@@ -1,0 +1,14 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+NC_012660.1_5881     -            302 xft:PD_0293          -            438     1e-32   99.8   3.6   1   1   8.7e-32   8.7e-32   96.7   3.6    20   291    11   299     3   301 0.80 # 6543745 # 6544650 # 1 # ID=1_5881;partial=00;start_type=ATG;rbs_motif=GGAG/GAGG;rbs_spacer=5-10bp;gc_cont=0.602
+#
+# Program:         phmmer
+# Version:         3.4 (Aug 2023)
+# Pipeline mode:   SEARCH
+# Query file:      xft_PD_0293_K22478.txt
+# Target file:     NC_012660.1_5881.txt
+# Option settings: phmmer --domtblout K22478_vs_target.domtblout xft_PD_0293_K22478.txt NC_012660.1_5881.txt 
+# Current dir:     /xdisk/twheeler/nsontakke/test_paper_m000845
+# Date:            Fri Sep 25 14:32:36 2026
+# [ok]
